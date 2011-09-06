@@ -1,0 +1,5 @@
+/mtbackup/Debug
+/mtbackup/Release
+/mtbackup/ipch
+*.suo
+*.sdf
