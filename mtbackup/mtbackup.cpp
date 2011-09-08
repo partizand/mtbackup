@@ -13,6 +13,14 @@
 #include <Poco\Util\IniFileConfiguration.h>
 #include <Poco\AutoPtr.h>
 
+#include "Poco/Logger.h"
+#include "Poco/PatternFormatter.h"
+#include "Poco/FormattingChannel.h"
+#include "Poco/ConsoleChannel.h"
+#include "Poco/FileChannel.h"
+#include "Poco/Message.h"
+
+
 using namespace std;
 using namespace Poco;
 using namespace Util;
@@ -32,6 +40,24 @@ int _tmain(int argc, _TCHAR* argv[])
 	string fPath1=pConf->getString("Path.File1");
 	string fPath2=pConf->getString("Path.File2");
 	
+// Вывод списка корневых ключей
+	AbstractConfiguration::Keys RootKeys;
+
+pConf-> keys("",RootKeys);
+
+if (!RootKeys.empty())
+{
+	cout<<"RootKeys:"<<endl;
+	for (AbstractConfiguration::Keys::const_iterator it = RootKeys.begin(); it != RootKeys.end(); ++it)
+			{
+				//std::string fullKey = base;
+				cout<< *it << endl;
+			
+			}
+	
+}
+
+
 	//TextConverter converter(utf16,utf8);
 	
 	//wstring wfPath1=L"d:\\temp\\тест\\test.txt";
@@ -45,15 +71,56 @@ int _tmain(int argc, _TCHAR* argv[])
 	Poco::File pFile(fPath1);
 	pFile.copyTo(fPath2);
 
-	cout<<fPath1<<endl;
-	cout<<fPath2<<endl;
+	//cout<<fPath1<<endl;
+	//cout<<fPath2<<endl;
 
-	wcout << fPath1.c_str()<<endl;
+	//wcout << fPath1.c_str()<<endl;
 	
 
 	//printf(fPath1.c_str());
 	
-	cout<<"Русский";
+	//cout<<"Русский";
+
+	// Проба Logging
+
+		// set up two channel chains - one to the
+	// console and the other one to a log file.
+	FormattingChannel* pFCConsole = new FormattingChannel(new PatternFormatter("%s: %p: %t"));
+	pFCConsole->setChannel(new ConsoleChannel);
+	pFCConsole->open();
+	
+	FormattingChannel* pFCFile = new FormattingChannel(new PatternFormatter("%Y-%m-%d %H:%M:%S.%c %N[%P]:%s:%q:%t"));
+	pFCFile->setChannel(new FileChannel("sample.log"));
+	pFCFile->open();
+
+	// create two Logger objects - one for
+	// each channel chain.
+	Logger& consoleLogger = Logger::create("ConsoleLogger", pFCConsole, Message::PRIO_INFORMATION);
+	Logger& fileLogger    = Logger::create("FileLogger", pFCFile, Message::PRIO_WARNING);
+	
+	
+
+	// log some messages
+	consoleLogger.error("An error message");
+	fileLogger.error("An error message");
+	
+	consoleLogger.warning("A warning message");
+	fileLogger.error("A warning message");
+	
+	consoleLogger.information("An information message");
+	fileLogger.information("An information message");
+	
+	poco_information(consoleLogger, "Another informational message");
+	poco_warning_f2(consoleLogger, "A warning message with arguments: %d, %d", 1, 2);
+	
+	Logger::get("ConsoleLogger").error("Another error message");
+
+	poco_information_f2(consoleLogger,"File %s copied to %s",fPath1,fPath2);
+	//consoleLogger.information("File copied.",fPath1);
+
+	
+
+
 
 	return 0;
 }
