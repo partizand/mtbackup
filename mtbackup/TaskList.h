@@ -5,10 +5,11 @@
 //#include <Poco\Util\IniFileConfiguration.h>
 //#include <Poco\Util\PropertyFileConfiguration.h>
 #include <Poco\Util\AbstractConfiguration.h>
+#include <Poco\Logger.h>
 //#include <Poco\AutoPtr.h>
 
-using namespace Poco;
-using namespace Util;
+//using namespace Poco;
+//using namespace Util;
 
 
 #include "TaskParam.h"
@@ -19,7 +20,7 @@ const int InitTaskCount=10; // начальная размерность вектора
 class TaskList
 {
 public:
-	TaskList(void);
+	TaskList(Poco::Logger &logger);
 	~TaskList(void);
 
 	
@@ -27,15 +28,18 @@ public:
 	//! Получить количество заданий
 	int count() {return Tasks.size();};
 	//! Добавить задание
-	void AddTask(TaskParam &Task);
+	void addTask(TaskParam &Task);
 	//! Удалить задание
-	void RemoveTask(int index=-1);
+	void removeTask(int index=-1);
 	//! Загрузить задания из ini файла
-	void LoadFromIni(const std::string &fileName);
+	void loadFromFile(const std::string &fileName);
+	//! Отладочная, вывести все задания на консоль
+	void deb_tocout();
 private:
 	//int _Count;
 	//! Загрузка списка заданий из конфигурации
-	void Load(Poco::Util::AbstractConfiguration *pConf);
-	
+	void load(const Poco::Util::AbstractConfiguration *pConf);
+	//! Ссылка на логер
+	Poco::Logger *AppLogger;
 };
 

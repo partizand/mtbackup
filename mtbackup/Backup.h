@@ -3,6 +3,8 @@
 #include "TaskList.h"
 #include <vector>
 
+#include <Poco\Logger.h>
+
 
 using namespace std;
 
@@ -10,11 +12,18 @@ class Backup
 {
 public:
 	
-	Backup(void);
+	Backup(Poco::Logger &logger);
 	~Backup(void);
-private:
+	//! Запустить задания
+	void start();
+
 	//! Список заданий
-	TaskList tasks;  
+	TaskList taskList;
+
+private:
+	
+	//! Ссылка на логер
+	Poco::Logger *AppLogger;
 	
 };
 
