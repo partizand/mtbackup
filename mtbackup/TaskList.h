@@ -24,9 +24,11 @@ public:
 	~TaskList(void);
 
 	
-	vector<TaskParam> Tasks; 
+	
 	//! Получить количество заданий
 	int count() {return Tasks.size();};
+	//! Оператор []
+	TaskParam& operator[] (int index);
 	//! Добавить задание
 	void addTask(TaskParam &Task);
 	//! Удалить задание
@@ -36,7 +38,9 @@ public:
 	//! Отладочная, вывести все задания на консоль
 	void deb_tocout();
 private:
-	//int _Count;
+	
+	//! Список заданий
+	vector<TaskParam> Tasks; 
 	//! Загрузка списка заданий из конфигурации
 	void load(const Poco::Util::AbstractConfiguration *pConf);
 	//! Ссылка на логер

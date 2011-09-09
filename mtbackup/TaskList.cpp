@@ -106,10 +106,19 @@ void TaskList::loadFromFile(const std::string &fileName)
 		pConf=new PropertyFileConfiguration(fileName);
 	}
 	if (pConf.isNull()) return; // Нет нужного расширения
-	poco_information_f1(*AppLogger,"Loading task file ",fileName);
+	poco_information_f1(*AppLogger,"Loading task file %s",fileName);
 	load(pConf);
 
 }
+
+//! Оператор []
+TaskParam& TaskList::operator[] (int index)
+{
+	
+	return Tasks[index];
+	
+}
+
 //! Отладочная, вывести все задания на консоль
 void TaskList::deb_tocout()
 {

@@ -26,8 +26,9 @@ class BackupApp: public Application
 	/// more information.
 {
 public:
-	BackupApp(): _helpRequested(false),_runRequested(false)
+	BackupApp(): _helpRequested(false),_runRequested(false),bak(logger())
 	{
+		//bak=new Backup(logger());
 	}
 
 protected:	
@@ -36,12 +37,13 @@ protected:
 		loadConfiguration(); // load default configuration files, if present
 		Application::initialize(self);
 		// add your own initialization code here
-		bak=new Backup(logger());
+		//bak=new Backup(logger());
+		
 	}
 	
 	void uninitialize()
 	{
-		delete bak;
+		//delete bak;
 		// add your own uninitialization code here
 		Application::uninitialize();
 	}
@@ -86,7 +88,7 @@ protected:
 			Option("run", "r", "Run tasks")
 				.required(false)
 				.repeatable(false)
-				.callback(OptionCallback<BackupApp>(this, &BackupApp::handleHelp)));
+				.callback(OptionCallback<BackupApp>(this, &BackupApp::handleRun)));
 		options.addOption(
 			Option("task-file", "t", "load tasks from a file")
 				.required(false)
@@ -120,7 +122,7 @@ protected:
 	}
 	void handleLoadTasks(const std::string& name, const std::string& value)
 	{
-		bak->taskList.loadFromFile(value); // Грузим файл конфигурации
+		bak.taskList.loadFromFile(value); // Грузим файл конфигурации
 	}	
 	void displayHelp()
 	{
@@ -150,7 +152,7 @@ protected:
 		if (!_helpRequested)
 		{
 			
-			if (_runRequested) bak->start();
+			if (_runRequested)	bak.start();
 			//Backup bak(&logger());
 			/*
 			logger().information("Arguments to main():");
@@ -195,7 +197,7 @@ protected:
 private:
 	bool _helpRequested;
 	bool _runRequested;
-	Backup *bak;
+	Backup bak;
 };
 
 
